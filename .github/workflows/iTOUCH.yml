@@ -1,4 +1,4 @@
-name: iTOUCH
+name: Build iTOUCH
 
 on:
   push:
@@ -33,7 +33,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: vendor/boost
-        key: boost_1_81_0_stable_v3
+        key: boost_1_81_0_stable_v4
     - if: steps.cache-boost.outputs.cache-hit != 'true'
       name: Download Boost
       run: curl -L -o boost_1_81_0.7z "https://github.com"
@@ -45,7 +45,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: vendor/cmake
-        key: cmake_3_31_6_linux_stable_v3
+        key: cmake_3_31_6_linux_stable_v4
     - if: steps.cache-cmake.outputs.cache-hit != 'true'
       name: Download Cmake
       run: curl -L -O "https://github.com"
@@ -61,7 +61,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: gradle
-        key: gradle-8.11.1_stable_v3
+        key: gradle-8.11.1_stable_v4
     - if: steps.cache-gradle.outputs.cache-hit != 'true'
       name: Download Gradle
       run: curl -L -o gradle-8.11.1-bin.zip "https://gradle.org"
@@ -73,7 +73,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: android-ndk
-        key: android-ndk-r25c_stable_v3
+        key: android-ndk-r25c_stable_v4
     - if: steps.cache-android-ndk.outputs.cache-hit != 'true'
       name: Download Android NDK
       run: curl -L -o android-ndk-r25c-linux.zip "https://google.com"
