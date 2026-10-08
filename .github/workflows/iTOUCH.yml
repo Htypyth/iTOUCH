@@ -36,13 +36,7 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    # 2. Setup Android NDK natively without downloading manually
-    - name: Setup Android NDK
-      uses: android-actions/setup-android@v3
-      with:
-        ndk-version: '25.2.9519653'
-
-    # 3. Download Boost using a reliable, direct URL
+    # 2. Download Boost using a reliable, direct URL
     - name: Try to get cached copy of Boost
       id: cache-boost
       uses: actions/cache@v3
@@ -57,18 +51,18 @@ jobs:
         curl -L "https://boost.io" | tar -C vendor -xzf -
         mv vendor/boost_1_81_0 vendor/boost
 
-    # 4. Set up Rust toolchains
+    # 3. Set up Rust toolchains
     - name: Install AArch64 Android Rust toolchain
       run: rustup target add aarch64-linux-android
 
     - name: Install cargo-ndk
       run: cargo install cargo-ndk@3.5.4
 
-    # 5. Generate local.properties automatically using the verified runner path
+    # 4. Generate local.properties automatically using the native runner path
     - name: Generate local.properties file
       run: echo "sdk.dir=$ANDROID_HOME" > android/local.properties
 
-    # 6. Build the project using the native wrapper instead of downloading isolated Gradle binaries
+    # 5. Build the project using pre-installed GitHub environment runner tools
     - name: Build for Android
       run: |
         cd android
@@ -76,7 +70,7 @@ jobs:
         ./gradlew assembleRelease
         mv app/build/outputs/apk/release/app-release.apk ../iTOUCH.apk
       env:
-        ANDROID_NDK_ROOT: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
+        ANDROID_NDK_ROOT: /usr/local/lib/android/sdk/ndk/25.2.9519653
 
     - uses: actions/upload-artifact@v4
       with:
