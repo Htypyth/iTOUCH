@@ -77,7 +77,7 @@ jobs:
     - name: Build for Android
       run: |
         cd android
-        gradle wrapper --gradle-version 8.5
+        gradle wrapper --gradle-version 8.11.1
         chmod +x gradlew
         ./gradlew assembleRelease
         find . -name "*.apk" -exec mv {} ${{ github.workspace }}/iTOUCH.apk \;
