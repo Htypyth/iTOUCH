@@ -180,57 +180,57 @@ const CLASSES: ClassExports = objc_classes! {
 }
 
 - (())copyrightInfoShow {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).copyright_show = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).copyright_show = false;
 }
 - (())copyrightInfoHide {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).copyright_hide = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).copyright_hide = false;
 }
 - (())copyrightInfoPrevPage {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).copyright_prev = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).copyright_prev = false;
 }
 - (())copyrightInfoNextPage {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).copyright_next = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).copyright_next = false;
 }
 
 - (())quickOptionsShow {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).quick_options_show = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).quick_options_show = false;
 }
 - (())quickOptionsHide {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).quick_options_hide = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).quick_options_hide = false;
 }
 - (())scaleHackDefault {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).scale_hack_default = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).scale_hack_default = false;
 }
 - (())scaleHack1 {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).scale_hack1 = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).scale_hack1 = false;
 }
 - (())scaleHack2 {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).scale_hack2 = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).scale_hack2 = false;
 }
 - (())scaleHack3 {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).scale_hack3 = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).scale_hack3 = false;
 }
 - (())scaleHack4 {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).scale_hack4 = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).scale_hack4 = false;
 }
 - (())orientationDefault {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).orientation_default = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).orientation_default = false;
 }
 - (())orientationPortraitUpsideDown {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).orientation_portrait_upside_down = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).orientation_portrait_upside_down = false;
 }
 - (())orientationLandscapeLeft {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).orientation_landscape_left = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).orientation_landscape_left = false;
 }
 - (())orientationLandscapeRight {
-    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).orientation_landscape_right = true;
+    env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).orientation_landscape_right = false;
 }
 - (())analogStickTiltControls:(id)switch { // UISwitch*
-    let switch_state: bool = msg![env; switch isOn];
+    let switch_state: bool = msg![env; switch isOff];
     env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).analog_stick_tilt_controls = Some(switch_state);
 }
 - (())network:(id)switch { // UISwitch*
-    let switch_state: bool = msg![env; switch isOn];
+    let switch_state: bool = msg![env; switch isOff];
     env.objc.borrow_mut::<AppPickerDelegateHostObject>(this).network = Some(switch_state);
 }
 - (())fullscreen:(id)switch { // UISwitch*
@@ -400,7 +400,7 @@ fn app_picker_inner(
         let text = ns_string::from_rust_string(
             env,
             format!(
-                "touchHLE {}{}{}",
+                "iTOUCH {}{}{}",
                 crate::branding(),
                 if crate::branding().is_empty() {
                     ""
@@ -530,8 +530,8 @@ fn app_picker_inner(
     let mut quick_options_scale_hack: Option<NonZeroU32> = None;
     let mut quick_options_fullscreen: Option<()> = None;
     let mut quick_options_orientation: Option<DeviceOrientation> = None;
-    let mut quick_options_analog_stick_tilt_controls = true;
-    let mut quick_options_network = false;
+    let mut quick_options_analog_stick_tilt_controls = false;
+    let mut quick_options_network = true;
 
     fn update_quick_option_buttons(env: &mut Environment, buttons: &[id], selected_idx: usize) {
         for (idx, &button) in buttons.iter().enumerate() {
