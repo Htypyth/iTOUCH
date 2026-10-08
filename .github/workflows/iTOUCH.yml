@@ -42,7 +42,7 @@ jobs:
       with:
         packages: 'ndk;25.2.9519653'
 
-    # 3. Pulls down Boost via a direct, follow-redirect download pipeline
+    # 3. Pulls down Boost via official GitHub API source streams
     - name: Try to get cached copy of Boost
       id: cache-boost
       uses: actions/cache@v3
@@ -54,9 +54,8 @@ jobs:
       name: Download and Extract Boost Release Package
       run: |
         mkdir -p vendor
-        wget https://boostorg.jfrog.io/artifactory/main/release/1.81.0/source/boost_1_81_0.tar.gz || curl -L -o boost_1_81_0.tar.gz "https://boost.io"
-        tar -C vendor -xzf boost_1_81_0.tar.gz
-        mv vendor/boost_1_81_0 vendor/boost
+        curl -L "https://github.com" | tar -C vendor -xzf -
+        mv vendor/boost-boost-1.81.0 vendor/boost
 
     # 4. Sets up standard Rust toolchains
     - name: Install AArch64 Android Rust toolchain
