@@ -42,22 +42,22 @@ jobs:
       with:
         packages: 'ndk;25.2.9519653'
 
-    # 3. Pulls down Boost via official GitHub API source streams safely
+    # 3. Clones Boost directly into the project workspace (Zero Downloads/Archives)
     - name: Try to get cached copy of Boost
       id: cache-boost
       uses: actions/cache@v3
       with:
         path: vendor/boost
-        key: boost_1_81_0
+        key: boost_1_81_0-git
 
     - if: steps.cache-boost.outputs.cache-hit != 'true'
-      name: Download and Extract Boost Release Package
-      run: |
-        mkdir -p vendor
-        curl -L "https://github.com" -o boost.tar.gz
-        tar -C vendor -xzf boost.tar.gz
-        mv vendor/boost-boost-1.81.0 vendor/boost || mv vendor/boost-* vendor/boost
-        rm boost.tar.gz
+      name: Pull Boost via Native Source Tree Allocation
+      uses: actions/checkout@v4
+      with:
+        repository: boostorg/boost
+        ref: boost-1.81.0
+        path: vendor/boost
+        submodules: true
 
     # 4. Sets up standard Rust toolchains
     - name: Install AArch64 Android Rust toolchain
