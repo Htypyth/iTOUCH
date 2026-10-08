@@ -54,9 +54,9 @@ jobs:
       name: Download and Extract Boost via GitHub CLI
       run: |
         mkdir -p vendor
-        gh release download boost-1.81.0 --repo boostorg/boost --archive --output boost.tar.gz
+        gh release download boost-1.81.0 --repo boostorg/boost --pattern '*.tar.gz' --output boost.tar.gz
         tar -C vendor -xzf boost.tar.gz
-        mv vendor/boost-boost-1.81.0 vendor/boost
+        mv vendor/boost-1.81.0 vendor/boost
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
