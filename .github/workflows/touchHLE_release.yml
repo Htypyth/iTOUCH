@@ -6,6 +6,7 @@ on:
   pull_request:
     branches: [ "trunk" ]
   create: # for tags
+  workflow_dispatch: 
 
 env:
   CARGO_TERM_COLOR: always
