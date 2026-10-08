@@ -38,7 +38,7 @@ jobs:
 
     - if: steps.cache-boost.outputs.cache-hit != 'true'
       name: Download Boost
-      run: curl -L -o boost_1_81_0.7z "https://github.com"
+      run: curl -L -o boost_1_81_0.7z "https://boost.io"
 
     - if: steps.cache-boost.outputs.cache-hit != 'true'
       name: Extract Boost
