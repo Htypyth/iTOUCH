@@ -42,14 +42,22 @@ jobs:
       with:
         packages: 'ndk;25.2.9519653'
 
-    # 3. Pulls down Boost 1.81.0 release files cleanly using verified GitHub redirect paths
-    - name: Download and Extract Boost Release Package
+    # 3. Pulls version-locked Boost 1.81.0 headers directly using Native Git Clones
+    - name: Try to get cached copy of Boost
+      id: cache-boost
+      uses: actions/cache@v3
+      with:
+        path: vendor/boost
+        key: boost_1_81_0-git-final-payload
+
+    - if: steps.cache-boost.outputs.cache-hit != 'true'
+      name: Pull Boost via Native Source Tree Allocation
       run: |
-        mkdir -p vendor
-        curl -f -L -o boost_1_81_0.tar.gz "https://github.com"
-        tar -C vendor -xzf boost_1_81_0.tar.gz
-        mv vendor/boost_1_81_0 vendor/boost
-        rm boost_1_81_0.tar.gz
+        git clone --depth 1 --branch boost-1.81.0 https://github.com vendor/boost-src
+        mkdir -p vendor/boost/boost
+        cd vendor/boost-src
+        git submodule update --init --recursive libs/core libs/config libs/preprocessor libs/detail libs/static_assert libs/type_traits libs/throw_exception libs/assert libs/move libs/mpl libs/predef libs/smart_ptr
+        find boost -mindepth 1 -maxdepth 1 -exec cp -r {} ../boost/boost/ \;
 
     # 4. Sets up standard Rust toolchains
     - name: Install AArch64 Android Rust toolchain
