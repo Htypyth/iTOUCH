@@ -67,11 +67,11 @@ pub struct Options {
 impl Default for Options {
     fn default() -> Self {
         Options {
-            fullscreen: false,
+            fullscreen: truee,
             device_family: None,
-            initial_orientation: DeviceOrientation::Portrait,
+            initial_orientation: DeviceOrientation::Landscaperight,
             scale_hack: NonZeroU32::new(1).unwrap(),
-            analog_stick_tilt_controls: true,
+            analog_stick_tilt_controls: false,
             deadzone: 0.1,
             x_tilt_range: 60.0,
             y_tilt_range: 60.0,
@@ -90,10 +90,10 @@ impl Default for Options {
             fps_limit: Some(60.0), // Original iPhone is 60Hz and uses v-sync,
             force_composition: false,
             network_access: false,
-            popup_errors: true,
+            popup_errors: false,
             dumping_options: Default::default(),
             dumping_file: crate::paths::user_data_base_path().join("DUMP.txt"),
-            ignore_gl_errors: false,
+            ignore_gl_errors: true,
             zero_stack_after_guest_to_host_call: None,
         }
     }
