@@ -1,4 +1,4 @@
-name: iTOUCH
+name: Build iTOUCH
 
 on:
   push:
@@ -73,13 +73,11 @@ jobs:
         echo "sdk.dir=$ANDROID_HOME" > android/local.properties
         echo "ndk.dir=$ANDROID_HOME/ndk/25.2.9519653" >> android/local.properties
 
-    # 6. Dynamically finds the folder containing gradlew and builds there
+    # 6. Generates a fresh compatible builder wrapper directly in your project folder
     - name: Build for Android
       run: |
-        GRADLEW_PATH=$(find . -name "gradlew" -print -quit)
-        GRADLEW_DIR=$(dirname "$GRADLEW_PATH")
-        echo "Found gradlew in directory: $GRADLEW_DIR"
-        cd "$GRADLEW_DIR"
+        cd android
+        gradle wrapper --gradle-version 8.5
         chmod +x gradlew
         ./gradlew assembleRelease
         find . -name "*.apk" -exec mv {} ${{ github.workspace }}/iTOUCH.apk \;
@@ -87,7 +85,6 @@ jobs:
         ANDROID_NDK_ROOT: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
-        APP_ALLOW_MISSING_DEPS: "true"
 
     - uses: actions/upload-artifact@v4
       with:
