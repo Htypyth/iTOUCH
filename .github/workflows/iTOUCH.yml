@@ -42,37 +42,28 @@ jobs:
       with:
         packages: 'ndk;25.2.9519653'
 
-    # 3. Clones Boost directly into the project workspace with all modular headers
-    - name: Try to get cached copy of Boost
-      id: cache-boost
-      uses: actions/cache@v3
+    # 3. Downloads and pre-compiles full Boost headers automatically
+    - name: Install Boost Headers
+      uses: actions-hub/boost@v1.81.0
       with:
-        path: vendor/boost
-        key: boost_1_81_0-git-recursive
-
-    - if: steps.cache-boost.outputs.cache-hit != 'true'
-      name: Pull Boost via Native Source Tree Allocation
-      uses: actions/checkout@v4
-      with:
-        repository: boostorg/boost
-        ref: boost-1.81.0
-        path: vendor/boost
-        submodules: recursive
+        boost_version: 1.81.0
+        boost_install_dir: ${{ github.workspace }}/vendor
 
     # 4. Sets up standard Rust toolchains
     - name: Install AArch64 Android Rust toolchain
       run: rustup target add aarch64-linux-android
 
+    # 5. Install cargo-ndk
     - name: Install cargo-ndk
       run: cargo install cargo-ndk@3.5.4
 
-    # 5. Configures properties using global runner paths
+    # 6. Configures properties using global runner paths
     - name: Generate local.properties file
       run: |
         echo "sdk.dir=$ANDROID_HOME" > android/local.properties
         echo "ndk.dir=$ANDROID_HOME/ndk/25.2.9519653" >> android/local.properties
 
-    # 6. Generates a fresh compatible builder wrapper and compiles
+    # 7. Generates a fresh compatible builder wrapper and compiles
     - name: Build for Android
       run: |
         cd android
