@@ -1,4 +1,4 @@
-name: Build iTOUCH
+name: iTOUCH
 
 on:
   push:
@@ -29,20 +29,20 @@ jobs:
     - name: Get Submodules
       run: git submodule update --init
 
-    # 1. Automatically sets up Java 17 for Gradle
+    # 1. Setup Java 17 for Gradle
     - name: Set up JDK 17
       uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
         java-version: '17'
 
-    # 2. Automatically sets up your NDK version from pre-installed runner assets
+    # 2. Setup your NDK version natively from pre-installed runner assets
     - name: Setup Android NDK
       uses: android-actions/setup-android@v3
       with:
         packages: 'ndk;25.2.9519653'
 
-    # 3. Pulls down Boost reliably via an automated download-and-extract tool
+    # 3. Pulls down Boost using the official, built-in GitHub CLI
     - name: Try to get cached copy of Boost
       id: cache-boost
       uses: actions/cache@v3
@@ -51,26 +51,27 @@ jobs:
         key: boost_1_81_0
 
     - if: steps.cache-boost.outputs.cache-hit != 'true'
-      name: Download and Extract Boost
-      uses: mcuadros/action-download-archive@v1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        repo: boostorg/boost
-        version: boost-1.81.0
-        path: vendor/boost
+      name: Download and Extract Boost via GitHub CLI
+      run: |
+        mkdir -p vendor
+        gh release download boost-1.81.0 --repo boostorg/boost --archive --output boost.tar.gz
+        tar -C vendor -xzf boost.tar.gz
+        mv vendor/boost-boost-1.81.0 vendor/boost
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    # 4. Sets up standard toolchains
+    # 4. Sets up standard Rust toolchains
     - name: Install AArch64 Android Rust toolchain
       run: rustup target add aarch64-linux-android
 
     - name: Install cargo-ndk
       run: cargo install cargo-ndk@3.5.4
 
-    # 5. Configures properties using global runner variables
+    # 5. Configures properties using global runner paths
     - name: Generate local.properties file
       run: echo "sdk.dir=$ANDROID_HOME" > android/local.properties
 
-    # 6. Executes build operations smoothly using native wrappers
+    # 6. Executes compilation using native project wrappers
     - name: Build for Android
       run: |
         cd android
