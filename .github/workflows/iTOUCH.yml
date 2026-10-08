@@ -38,12 +38,10 @@ jobs:
 
     - if: steps.cache-boost.outputs.cache-hit != 'true'
       name: Download Boost
-      # The tar.gz version is 140MB
-      run: curl -L -o boost_1_81_0.tar.gz "https://jfrog.io"
+      run: curl -L -o boost_1_81_0.tar.gz "https://boost.io"
 
     - if: steps.cache-boost.outputs.cache-hit != 'true'
       name: Extract Boost
-      # Use tar for extraction on Linux
       run: mkdir -p vendor && tar xzvf boost_1_81_0.tar.gz -C vendor && mv vendor/boost_1_81_0 vendor/boost
 
     - name: Try to get cached copy of cmake
