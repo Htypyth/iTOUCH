@@ -1,4 +1,4 @@
-name: Build iTOUCH
+name: iTOUCH
 
 on:
   push:
@@ -33,10 +33,10 @@ jobs:
       uses: actions/cache@v3
       with:
         path: vendor/boost
-        key: boost_1_81_0
+        key: boost_1_81_0_stable_v1
     - if: \${{ steps.cache-boost.outputs.cache-hit != 'true' }}
       name: Download Boost
-      run: curl -L -o boost_1_81_0.7z "https://boost.io"
+      run: curl -L -o boost_1_81_0.7z "https://github.com"
     - if: \${{ steps.cache-boost.outputs.cache-hit != 'true' }}
       name: Extract Boost
       run: 7z -ovendor x boost_1_81_0.7z && mv vendor/boost_1_81_0 vendor/boost
@@ -45,7 +45,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: vendor/cmake
-        key: cmake_3_31_6_linux
+        key: cmake_3_31_6_linux_stable_v1
     - if: \${{ steps.cache-cmake.outputs.cache-hit != 'true' }}
       name: Download Cmake
       run: curl -L -O "https://github.com"
@@ -62,7 +62,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: gradle
-        key: gradle-8.11.1
+        key: gradle-8.11.1_stable_v1
     - if: \${{ steps.cache-gradle.outputs.cache-hit != 'true' }}
       name: Download Gradle
       run: curl -L -o gradle-8.11.1-bin.zip "https://gradle.org"
@@ -75,7 +75,7 @@ jobs:
       uses: actions/cache@v3
       with:
         path: android-ndk
-        key: android-ndk-r25c
+        key: android-ndk-r25c_stable_v1
     - if: \${{ steps.cache-android-ndk.outputs.cache-hit != 'true' }}
       name: Download Android NDK
       run: curl -L -o android-ndk-r25c-linux.zip "https://google.com"
@@ -83,14 +83,14 @@ jobs:
       name: Extract Android NDK
       run: 7z -oandroid-ndk -snld x android-ndk-r25c-linux.zip
     - name: Link Android NDK
-      run: ln -s PWD'/android-ndk/android-ndk-r25c' ANDROID_SDK_ROOT'/ndk/25.2.9519653'
+      run: ln -s "PWD/android-ndk/android-ndk-r25c" "ANDROID_SDK_ROOT/ndk/25.2.9519653"
     # Why isn't there a command for this?
     - name: Generate local.properties file
-      run: echo 'sdk.dir='\$ANDROID_SDK_ROOT > android/local.properties
+      run: echo "sdk.dir=\$ANDROID_SDK_ROOT" > android/local.properties
     - name: Lint
       run: dev-scripts/lint.sh ndk -t arm64-v8a
       env:
-        # The version should match the ndkVersion defined in `android\app\build.gradle`
+        # The version should match the ndkVersion defined in `android/app/build.gradle`
         ANDROID_NDK_ROOT: '/usr/local/lib/android/sdk/ndk/25.2.9519653'
         ANDROID_NDK: '/usr/local/lib/android/sdk/ndk/25.2.9519653'
         ANDROID_NDK_HOME: '/usr/local/lib/android/sdk/ndk/25.2.9519653'
@@ -99,7 +99,7 @@ jobs:
     - name: Build for Android
       run: cd android && ../gradle/gradle-8.11.1/bin/gradle assembleRelease && mv app/build/outputs/apk/release/app-release.apk ../iTOUCH.apk
       env:
-        # The version should match the ndkVersion defined in `android\app\build.gradle`
+        # The version should match the ndkVersion defined in `android/app/build.gradle`
         ANDROID_NDK_ROOT: '/usr/local/lib/android/sdk/ndk/25.2.9519653'
         CMAKE: \${{ github.workspace }}/vendor/cmake/bin/cmake
     - uses: actions/upload-artifact@v4
