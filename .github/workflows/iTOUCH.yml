@@ -54,7 +54,7 @@ jobs:
       name: Download and Extract Boost Pre-Built Release Package
       run: |
         mkdir -p vendor
-        curl -L -f -o boost_1_81_0.tar.gz "https://boost.io"
+        wget https://archives.boost.io/release/1.81.0/source/boost_1_81_0.tar.gz
         tar -C vendor -xzf boost_1_81_0.tar.gz
         mv vendor/boost_1_81_0 vendor/boost
         rm boost_1_81_0.tar.gz
