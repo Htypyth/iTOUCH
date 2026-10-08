@@ -1,4 +1,4 @@
-name: iTOUCH
+name: Build iTOUCH
 
 on:
   push:
@@ -42,39 +42,27 @@ jobs:
       with:
         packages: 'ndk;25.2.9519653'
 
-    # 3. Pulls version-locked Boost 1.81.0 headers directly via Git Checkout
-    - name: Pull Boost 1.81.0 Source Tree
-      uses: actions/checkout@v4
-      with:
-        repository: boostorg/boost
-        ref: boost-1.81.0
-        path: vendor/boost-src
-        submodules: false
-
-    # 4. Manually structure the precise header layout touchHLE requires
-    - name: Configure Boost Headers Directory
+    # 3. Securely fetches and unpacks a pristine, isolated copy of Boost via GitHub's pre-installed package manager
+    - name: Install Boost via System Homebrew Client
       run: |
-        mkdir -p vendor/boost/boost
-        uses_checkout_path="${{ github.workspace }}/vendor/boost-src"
-        if [ -d "$uses_checkout_path/boost" ]; then
-          cp -r "$uses_checkout_path/boost/"* vendor/boost/boost/
-        fi
+        brew install boost@1.81 || brew install boost
+        echo "BOOST_PATH=$(brew --prefix boost@1.81 || brew --prefix boost)" >> $GITHUB_ENV
 
-    # 5. Sets up standard Rust toolchains
+    # 4. Sets up standard Rust toolchains
     - name: Install AArch64 Android Rust toolchain
       run: rustup target add aarch64-linux-android
 
-    # 6. Install cargo-ndk
+    # 5. Install cargo-ndk
     - name: Install cargo-ndk
       run: cargo install cargo-ndk@3.5.4
 
-    # 7. Configures properties using global runner paths
+    # 6. Configures properties using global runner paths
     - name: Generate local.properties file
       run: |
         echo "sdk.dir=$ANDROID_HOME" > android/local.properties
         echo "ndk.dir=$ANDROID_HOME/ndk/25.2.9519653" >> android/local.properties
 
-    # 8. Generates a fresh compatible builder wrapper and compiles
+    # 7. Generates a fresh compatible builder wrapper and compiles
     - name: Build for Android
       run: |
         cd android
@@ -86,7 +74,7 @@ jobs:
         ANDROID_NDK_ROOT: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
-        BOOST_ROOT: ${{ github.workspace }}/vendor/boost
+        BOOST_ROOT: ${{ env.BOOST_PATH }}
 
     - uses: actions/upload-artifact@v4
       with:
