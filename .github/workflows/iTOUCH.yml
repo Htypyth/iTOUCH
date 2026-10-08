@@ -71,13 +71,16 @@ jobs:
     - name: Generate local.properties file
       run: echo "sdk.dir=$ANDROID_HOME" > android/local.properties
 
-    # 6. Executes compilation using the explicit project-level wrapper script
+    # 6. Dynamically finds the folder containing gradlew and builds there
     - name: Build for Android
       run: |
-        cd android
+        GRADLEW_PATH=$(find . -name "gradlew" -print -quit)
+        GRADLEW_DIR=$(dirname "$GRADLEW_PATH")
+        echo "Found gradlew in directory: $GRADLEW_DIR"
+        cd "$GRADLEW_DIR"
         chmod +x gradlew
         ./gradlew assembleRelease
-        find . -name "*.apk" -exec mv {} ../iTOUCH.apk \;
+        find . -name "*.apk" -exec mv {} ${{ github.workspace }}/iTOUCH.apk \;
       env:
         ANDROID_NDK_ROOT: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
 
