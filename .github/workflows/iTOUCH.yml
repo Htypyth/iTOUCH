@@ -42,13 +42,13 @@ jobs:
       with:
         packages: 'ndk;25.2.9519653'
 
-    # 3. Clones Boost directly into the project workspace (Zero Downloads/Archives)
+    # 3. Clones Boost directly into the project workspace with all modular headers
     - name: Try to get cached copy of Boost
       id: cache-boost
       uses: actions/cache@v3
       with:
         path: vendor/boost
-        key: boost_1_81_0-git
+        key: boost_1_81_0-git-recursive
 
     - if: steps.cache-boost.outputs.cache-hit != 'true'
       name: Pull Boost via Native Source Tree Allocation
@@ -57,7 +57,7 @@ jobs:
         repository: boostorg/boost
         ref: boost-1.81.0
         path: vendor/boost
-        submodules: true
+        submodules: recursive
 
     # 4. Sets up standard Rust toolchains
     - name: Install AArch64 Android Rust toolchain
@@ -72,7 +72,7 @@ jobs:
         echo "sdk.dir=$ANDROID_HOME" > android/local.properties
         echo "ndk.dir=$ANDROID_HOME/ndk/25.2.9519653" >> android/local.properties
 
-    # 6. Generates a fresh compatible builder wrapper directly in your project folder
+    # 6. Generates a fresh compatible builder wrapper and compiles
     - name: Build for Android
       run: |
         cd android
@@ -84,6 +84,7 @@ jobs:
         ANDROID_NDK_ROOT: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
+        BOOST_ROOT: ${{ github.workspace }}/vendor/boost
 
     - uses: actions/upload-artifact@v4
       with:
