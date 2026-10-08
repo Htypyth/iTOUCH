@@ -1,4 +1,4 @@
-name: Build iTOUCH
+name: iTOUCH
 
 on:
   push:
@@ -27,7 +27,7 @@ jobs:
       run: dev-scripts/format.sh --check
 
     - name: Get Submodules
-      run: git submodule update --init
+      run: git submodule update --init --recursive
 
     # 1. Setup Java 17 for Gradle
     - name: Set up JDK 17
@@ -42,27 +42,39 @@ jobs:
       with:
         packages: 'ndk;25.2.9519653'
 
-    # 3. Natively installs Boost directly from the Linux System Repositories
-    - name: Install System Boost Development Packages
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libboost-all-dev
+    # 3. Pulls version-locked Boost 1.81.0 headers directly via Git Checkout
+    - name: Pull Boost 1.81.0 Source Tree
+      uses: actions/checkout@v4
+      with:
+        repository: boostorg/boost
+        ref: boost-1.81.0
+        path: vendor/boost-src
+        submodules: false
 
-    # 4. Sets up standard Rust toolchains
+    # 4. Manually structure the precise header layout touchHLE requires
+    - name: Configure Boost Headers Directory
+      run: |
+        mkdir -p vendor/boost/boost
+        uses_checkout_path="${{ github.workspace }}/vendor/boost-src"
+        if [ -d "$uses_checkout_path/boost" ]; then
+          cp -r "$uses_checkout_path/boost/"* vendor/boost/boost/
+        fi
+
+    # 5. Sets up standard Rust toolchains
     - name: Install AArch64 Android Rust toolchain
       run: rustup target add aarch64-linux-android
 
-    # 5. Install cargo-ndk
+    # 6. Install cargo-ndk
     - name: Install cargo-ndk
       run: cargo install cargo-ndk@3.5.4
 
-    # 6. Configures properties using global runner paths
+    # 7. Configures properties using global runner paths
     - name: Generate local.properties file
       run: |
         echo "sdk.dir=$ANDROID_HOME" > android/local.properties
         echo "ndk.dir=$ANDROID_HOME/ndk/25.2.9519653" >> android/local.properties
 
-    # 7. Generates a fresh compatible builder wrapper and compiles
+    # 8. Generates a fresh compatible builder wrapper and compiles
     - name: Build for Android
       run: |
         cd android
@@ -74,7 +86,7 @@ jobs:
         ANDROID_NDK_ROOT: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
-        BOOST_ROOT: /usr
+        BOOST_ROOT: ${{ github.workspace }}/vendor/boost
 
     - uses: actions/upload-artifact@v4
       with:
