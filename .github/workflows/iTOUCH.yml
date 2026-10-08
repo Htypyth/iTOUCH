@@ -71,12 +71,12 @@ jobs:
     - name: Generate local.properties file
       run: echo "sdk.dir=$ANDROID_HOME" > android/local.properties
 
-    # 6. Executes compilation using global gradle system task commands
+    # 6. Executes compilation using the explicit project-level wrapper script
     - name: Build for Android
       run: |
         cd android
-        find . -name "gradlew" -exec chmod +x {} +
-        gradle assembleRelease || ./gradlew assembleRelease
+        chmod +x gradlew
+        ./gradlew assembleRelease
         find . -name "*.apk" -exec mv {} ../iTOUCH.apk \;
       env:
         ANDROID_NDK_ROOT: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
