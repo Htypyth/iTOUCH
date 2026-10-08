@@ -1,4 +1,4 @@
-name: Build iTOUCH
+name: iTOUCH
 
 on:
   push:
@@ -97,7 +97,7 @@ jobs:
         CMAKE: \${{ github.workspace }}/vendor/cmake/bin/cmake
     # Don't attempt to run tests (can't run on Android).
     - name: Build for Android
-      run: cd android && ../gradle/gradle-8.11.1/bin/gradle assembleRelease && mv app/build/outputs/apk/release/app-release.apk ../touchHLE.apk
+      run: cd android && ../gradle/gradle-8.11.1/bin/gradle assembleRelease && mv app/build/outputs/apk/release/app-release.apk ../iTOUCH.apk
       env:
         # The version should match the ndkVersion defined in `android\app\build.gradle`
         ANDROID_NDK_ROOT: '/usr/local/lib/android/sdk/ndk/25.2.9519653'
