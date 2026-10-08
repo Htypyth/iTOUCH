@@ -42,12 +42,11 @@ jobs:
       with:
         packages: 'ndk;25.2.9519653'
 
-    # 3. Downloads and pre-compiles full Boost headers automatically
-    - name: Install Boost Headers
-      uses: actions-hub/boost@v1.81.0
-      with:
-        boost_version: 1.81.0
-        boost_install_dir: ${{ github.workspace }}/vendor
+    # 3. Natively installs Boost directly from the Linux System Repositories
+    - name: Install System Boost Development Packages
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libboost-all-dev
 
     # 4. Sets up standard Rust toolchains
     - name: Install AArch64 Android Rust toolchain
@@ -75,7 +74,7 @@ jobs:
         ANDROID_NDK_ROOT: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         ANDROID_NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
         NDK_HOME: ${{ env.ANDROID_HOME }}/ndk/25.2.9519653
-        BOOST_ROOT: ${{ github.workspace }}/vendor/boost
+        BOOST_ROOT: /usr
 
     - uses: actions/upload-artifact@v4
       with:
