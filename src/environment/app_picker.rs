@@ -66,7 +66,7 @@ pub fn app_picker(options: Options) -> Result<(PathBuf, Vec<String>), String> {
             .and_then(|apps| {
                 if apps.is_empty() {
                     Err(format!(
-                        "{}",
+                        "No apps were found in the {} directory.",
                         apps_dir.display()
                     ))
                 } else {
