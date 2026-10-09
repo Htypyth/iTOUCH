@@ -66,7 +66,7 @@ pub fn app_picker(options: Options) -> Result<(PathBuf, Vec<String>), String> {
             .and_then(|apps| {
                 if apps.is_empty() {
                     Err(format!(
-                        "No apps were found in the {} directory.",
+                        "{}",
                         apps_dir.display()
                     ))
                 } else {
@@ -281,10 +281,10 @@ fn show_app_picker_gui(
             "" => include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/res/icon.png")),
             "UNOFFICIAL" => include_bytes!(concat!(
                 env!("CARGO_MANIFEST_DIR"),
-                "/res/icon.png"
+                "/res/icon_unofficial.png"
             )),
             "PREVIEW" => {
-                include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/res/icon_.png"))
+                include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/res/icon_preview.png"))
             }
             _ => panic!(),
         };
