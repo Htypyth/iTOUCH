@@ -67,9 +67,9 @@ pub struct Options {
 impl Default for Options {
     fn default() -> Self {
         Options {
-            fullscreen: truee,
+            fullscreen: true,
             device_family: None,
-            initial_orientation: DeviceOrientation::Landscaperight,
+            initial_orientation: DeviceOrientation::LandscapeRight,
             scale_hack: NonZeroU32::new(1).unwrap(),
             analog_stick_tilt_controls: false,
             deadzone: 0.1,
