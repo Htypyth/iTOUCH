@@ -1,4 +1,4 @@
-name: Build iTOUCH
+name: iTOUCH
 
 on:
   push:
@@ -19,8 +19,6 @@ jobs:
     - name: Checkout iTOUCH
       uses: actions/checkout@v4
       with:
-        repository: 'touchHLE/touchHLE'
-        ref: 'trunk'
         fetch-depth: 0
 
     - name: Check formatting
