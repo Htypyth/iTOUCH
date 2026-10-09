@@ -281,10 +281,10 @@ fn show_app_picker_gui(
             "" => include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/res/icon.png")),
             "UNOFFICIAL" => include_bytes!(concat!(
                 env!("CARGO_MANIFEST_DIR"),
-                "/res/icon_unofficial.png"
+                "/res/icon.png"
             )),
             "PREVIEW" => {
-                include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/res/icon_preview.png"))
+                include_bytes!(concat!(env!("CARGO_MANIFEST_DIR"), "/res/icon_.png"))
             }
             _ => panic!(),
         };
