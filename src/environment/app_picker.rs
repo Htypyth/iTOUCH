@@ -332,57 +332,6 @@ fn app_picker_inner(
     let main_view: id = msg![env; main_view initWithFrame:app_frame];
     () = msg![env; window addSubview:main_view];
 
-    // Wallpaper
-    let mut found_wallpaper = false;
-    let mut have_wallpaper = false;
-    for candidate in paths::WALLPAPER_FILES {
-        let candidate = paths::user_data_base_path().join(candidate);
-        if !candidate.exists() {
-            continue;
-        }
-        found_wallpaper = true;
-
-        let image = match std::fs::read(&candidate) {
-            Ok(image) => image,
-            Err(e) => {
-                log!("Warning: couldn't read {}: {}", candidate.display(), e);
-                break;
-            }
-        };
-        let image = match Image::from_bytes(&image) {
-            Ok(image) => image,
-            Err(e) => {
-                log!("Warning: couldn't decode {}: {}", candidate.display(), e);
-                break;
-            }
-        };
-
-        let image = cg_image::from_image(env, image);
-        let image: id = msg_class![env; UIImage imageWithCGImage:image];
-        let wallpaper: id = msg_class![env; UIImageView alloc];
-        let wallpaper: id = msg![env; wallpaper initWithImage:image];
-        () = msg![env; wallpaper setFrame:(CGRect {
-            origin: CGPoint {
-                x: 0.0,
-                y: 0.0,
-            },
-            size: app_frame.size,
-        })];
-        () = msg![env; wallpaper setAlpha:(0.5 as CGFloat)];
-        () = msg![env; main_view addSubview:wallpaper];
-        have_wallpaper = true;
-        break;
-    }
-    if !found_wallpaper {
-        let CGSize { width, height } = app_frame.size;
-        log!(
-            "No wallpaper found; filename can be one of: {}; ideal size is {}×{} pixels",
-            paths::WALLPAPER_FILES.join(", "),
-            width,
-            height,
-        );
-    }
-
     // Version label
     {
         let label_frame = CGRect {
