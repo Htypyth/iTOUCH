@@ -503,10 +503,7 @@ fn app_picker_inner(
         main_view,
         app_frame.size,
         buttons_row_center,
-        &[
-            ("File manager", "openFileManager"),
-            ("Quick options", "quickOptionsShow"),
-        ],
+        &[],
         None,
     );
     make_button_row(
@@ -515,10 +512,7 @@ fn app_picker_inner(
         main_view,
         app_frame.size,
         buttons_row2_center,
-        &[
-            ("Copyright info", "copyrightInfoShow"),
-            ("touchHLE.org", "visitWebsite"),
-        ],
+        &[],
         None,
     );
 
